@@ -1,6 +1,7 @@
 import React from 'react';
 import asyncLoad from 'react-async-loader'; // for loading script tag asyncly `npm i --save react-async-loader`
 
+
 const CLIENT_ID = process.env.EX_OAUTH_CLIENT_ID;
 const API_KEY = process.env.EX_API_KEY;
 
@@ -12,6 +13,9 @@ const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/res
 const SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readonly';
 
 let tokenClient;
+// import gapi and gis
+const gapiScript = 'https://apis.google.com/js/api.js';
+const gisScript = 'https://accounts.google.com/gsi/client';
 let gapiInited = false;
 let gisInited = false;
 
