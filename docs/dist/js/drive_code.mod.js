@@ -1,1 +1,0 @@
-document.getElementById("authorize_button").style.visibility="hidden",document.getElementById("signout_button").style.visibility="hidden";
