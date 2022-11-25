@@ -1,7 +1,3 @@
-import React from 'react';
-import asyncLoad from 'react-async-loader'; // for loading script tag asyncly `npm i --save react-async-loader`
-
-
 const CLIENT_ID = process.env.EX_OAUTH_CLIENT_ID;
 const API_KEY = process.env.EX_API_KEY;
 
