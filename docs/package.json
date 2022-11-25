@@ -1,0 +1,9 @@
+{
+    "license": "ISC",
+    "name": "better_year",
+    "version": "0.1.0",
+    "dependencies": {
+        "react-scripts": ">=5.0.0",
+        "nth-check": ">=2.1.0"
+    }
+}
