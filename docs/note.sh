@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # change to the directory do docs
-# cd docs
+cd docs
+
+echo $PWD
 
 dependencies=[
     "webpack"
@@ -16,3 +18,5 @@ for dependency in "${dependencies[@]}"; do
     npm install --save-dev $dependency
     npm link $dependency
 done
+
+npm run build
