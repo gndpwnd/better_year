@@ -1,5 +1,5 @@
-const CLIENT_ID = process.env.EX_OAUTH_CLIENT_ID;
-const API_KEY = process.env.EX_API_KEY;
+//const CLIENT_ID = process.env.EX_OAUTH_CLIENT_ID;
+//const API_KEY = process.env.EX_API_KEY;
 
 // Discovery doc URL for APIs used by the quickstart
 const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';

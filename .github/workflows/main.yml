@@ -14,7 +14,6 @@ jobs:
         - name: Build
           run: |
             npm install
-            npm install react-scripts@latest
             npm run-script build
           env:
 
