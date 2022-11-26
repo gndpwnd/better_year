@@ -3,9 +3,10 @@ const path = require('path');
 const process = require('process');
 const {authenticate} = require('@google-cloud/local-auth');
 const {google} = require('googleapis');
+const { getAPI } = require('googleapis-common');
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/tasks.readonly'];
+const SCOPES = ['https://www.googleapis.com/auth/contacts.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -66,24 +67,52 @@ async function authorize() {
 }
 
 /**
- * Lists the user's first 10 task lists.
+ * Print the display name if available for 10 connections.
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-async function listTaskLists(auth) {
-  const service = google.tasks({version: 'v1', auth});
-  const res = await service.tasklists.list({
-    maxResults: 10,
+async function listConnectionNames(auth) {
+  const service = google.people({version: 'v1', auth});
+  const res = await service.people.connections.list({
+    resourceName: 'people/me',
+    pageSize: 10,
+    personFields: 'names,emailAddresses',
   });
-  const taskLists = res.data.items;
-  if (taskLists || taskLists.length === 0) {
-    console.log('No task lists found.');
+  const connections = res.data.connections;
+  if (!connections || connections.length === 0) {
+    console.log('No connections found.');
     return;
   }
-  console.log('Task lists:');
-  taskLists.forEach((taskList) => {
-    console.log(`${taskList.title} (${taskList.id})`);
+  console.log('Connections:');
+  connections.forEach((person) => {
+    if (person.names && person.names.length > 0) {
+      console.log(person.names[0].displayName);
+    } else {
+      console.log('No display name found for connection.');
+    }
   });
 }
 
-authorize().then(listTaskLists).catch(console.error);
+
+async function get_my_birthday(auth) {
+    
+    // get my birthday
+    const service = google.people({version: 'v1', auth: auth});
+    const res = await service.people.get({
+        resourceName: 'people/me',
+        personFields: 'birthdays',
+    });
+    const person = res.data;
+    if (!person) {
+        console.log('No person found.');
+        return;
+    }
+    console.log('Person:');
+    if (person.birthdays && person.birthdays.length > 0) {
+        console.log(person.birthdays[0].text);
+    } else {
+        console.log('No birthday found.');
+    }
+}
+
+authorize().then(listConnectionNames).then(get_my_birthday).catch(console.error);
