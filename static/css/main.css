@@ -1,0 +1,13 @@
+/* Styles Coming Soon */
+
+#everything {
+    background-color: black;
+    color: white;
+}
+
+#logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
+}
