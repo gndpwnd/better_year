@@ -8,14 +8,10 @@
    </head>
    <body id="everything">
       <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
-      <h1 id="title">{{ name }} | {{ dob }}</h1>
-         <div class="options">
-            <div>
-               <a href="/report" id="option_type1">Reporting</a>
-            </div>
-            <div>
-               <a href="/goals" id="option_type1">Goals</a>
-            </div>
-         </div>
+      <h1 id="title">Goals</h1>
+      <h2 id="subtitle">Macro Goals</h2>
+      <p> {{ macro }} </p>
+      <h2 id="subtitle">Micro Goals</h2>
+      <p> {{ micro }} </p>
    </body>
 </html>

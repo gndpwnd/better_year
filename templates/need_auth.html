@@ -3,16 +3,17 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Authlib Connect</title>
+      <title>Better Year</title>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}"/>
    </head>
-   <body>
-        <h1>Please Login to Continue...</h1>
-        <p align="center">
-            <a href="google/">
-            <img id="google"
-                src="https://img.shields.io/badge/Google-Connect-brightgreen?style=for-the-badge&labelColor=black&logo=google"
-                alt="Google"> <br>
-            </a>
-        </p>
+   <body id="everything">
+      <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
+      <h1 id="title">Authentication Required!</h1>
+      <p id="description">
+            Please connect your google account to continue.
+            <br>
+            <br>
+            <a href="/google">Click Here to Login</a>
+      </p>
    </body>
 </html>

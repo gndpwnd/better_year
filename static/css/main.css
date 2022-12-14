@@ -11,3 +11,33 @@
     margin-right: auto;
     width: 20%;
 }
+
+#title {
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.options {
+    /* Display the options in a row */
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    /* center the options */
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+}
+
+.options>* {
+    /* Make the options take up the same amount of space */
+    flex: 1 1 0;
+}
+
+#description {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 10%;
+}
