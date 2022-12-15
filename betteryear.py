@@ -1,6 +1,6 @@
 import os
 import flask
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, request, jsonify
 from authlib.integrations.flask_client import OAuth
 
 import google_api_stuff.drive as report_app
@@ -19,14 +19,33 @@ app.register_blueprint(tasks_app.goals_app)
 
 app.config['SERVER_NAME'] = 'localhost:8000'
 
-@app.route('/')
+@app.route('/submit', methods=['POST'])
+def submit():
+    # print data from form to console
+    print(request.form)
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
     # If user is already logged in
     if 'google_token' in flask.session:
-        return render_template(
-            'index.html', 
-            name = flask.session['user_name'],
-            dob = acc.get_birthday(flask.session['google_token']),
+        
+        if request.method == 'POST':
+            # read the posted values from the UI
+            tz = request.form['timezone']
+            flask.session['client_tz'] = tz
+
+        if not 'client_tz' in flask.session:
+            return render_template(
+                'tz_select.html',
+                name = flask.session['user_name'],
+                dob = acc.get_birthday(flask.session['google_token']),
+            )
+        else:
+            return render_template(
+                'betteryear.html', 
+                name = flask.session['user_name'],
+                dob = acc.get_birthday(flask.session['google_token']),
+                tz = flask.session['client_tz'],
             )
     else:
         return render_template('need_auth.html')

@@ -5,9 +5,221 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Better Year</title>
       <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}"/>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/report.css')}}"/>
    </head>
    <body id="everything">
       <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
-        <h1 id="title">Create a New Report</h1>
+      <h1 id="title">Create a New Report</h1>
+      <div class="report-form">
+
+         <p class="report-category">Rate Today's Success</p>
+
+         <form class="success-form">
+            <div class="td-success-scale">
+               <button class="suc_btn btn btn-scale btn-scale-asc-1">1</button>
+               <button class="suc_btn btn btn-scale btn-scale-asc-2">2</button>
+               <button class="suc_btn btn btn-scale btn-scale-asc-3">3</button>
+               <button class="suc_btn btn btn-scale btn-scale-asc-4">4</button>
+               <button class="suc_btn btn btn-scale btn-scale-asc-5">5</button>
+               <button class="suc_btn btn btn-scale btn-scale-asc-6">6</button>
+               <button class="suc_btn btn btn-scale btn-scale-asc-7">7</button>
+               <button class="suc_btn btn btn-scale btn-scale-asc-8">8</button>
+               <button class="suc_btn btn btn-scale btn-scale-asc-9">9</button>
+               <button class="suc_btn btn btn-scale btn-scale-asc-10">10</button>
+            </div>
+         </form>
+
+         <p class="report-category">-- Meals --</p>
+
+         <form class="meal-form">
+            <p class="meal-form-title">#1</p>
+            <p class="meal-form-subtitle">Rating</p>
+            <div class="meal-form-scale">
+               <button class="btn btn-scale btn-scale-asc-1">1</button>
+               <button class="btn btn-scale btn-scale-asc-2">2</button>
+               <button class="btn btn-scale btn-scale-asc-3">3</button>
+               <button class="btn btn-scale btn-scale-asc-4">4</button>
+               <button class="btn btn-scale btn-scale-asc-5">5</button>
+               <button class="btn btn-scale btn-scale-asc-6">6</button>
+               <button class="btn btn-scale btn-scale-asc-7">7</button>
+               <button class="btn btn-scale btn-scale-asc-8">8</button>
+               <button class="btn btn-scale btn-scale-asc-9">9</button>
+               <button class="btn btn-scale btn-scale-asc-10">10</button>
+            </div>
+            <p class="meal-form-subtitle">Please Describe:</p>
+            <textarea class="meal-form-desc" name="meal-form-desc" rows="4" cols="50"></textarea>
+            <br>
+            <button type="button" id="add-more-meals">+meal</button>
+         </form>
+
+         <p class="report-category">-- Workouts --</p>
+
+         <form class="workout-form">
+            <p class="workout-form-title">#1</p>
+            <p class="workout-form-subtitle">Rating</p>
+            <div class="workout-form-scale">
+               <button class="btn btn-scale btn-scale-asc-1">1</button>
+               <button class="btn btn-scale btn-scale-asc-2">2</button>
+               <button class="btn btn-scale btn-scale-asc-3">3</button>
+               <button class="btn btn-scale btn-scale-asc-4">4</button>
+               <button class="btn btn-scale btn-scale-asc-5">5</button>
+               <button class="btn btn-scale btn-scale-asc-6">6</button>
+               <button class="btn btn-scale btn-scale-asc-7">7</button>
+               <button class="btn btn-scale btn-scale-asc-8">8</button>
+               <button class="btn btn-scale btn-scale-asc-9">9</button>
+               <button class="btn btn-scale btn-scale-asc-10">10</button>
+            </div>
+            <p class="workout-form-subtitle">Please Describe:</p>
+            <textarea class="workout-form-desc" name="workout-form-desc" rows="4" cols="50"></textarea>
+            <br>
+            <button type="button" id="add-more-workouts">+workout</button>
+         </form>
+
+         <p class="report-category">-- Memories --</p>
+
+         <form class="memory-form">
+            <p class="memory-form-title">#1</p>
+            <p class="memory-form-subtitle">Subject:</p>
+            <input class="memory-form-subject" type="text" name="memory-form-subject">
+            <p class="memory-form-subtitle">Please Describe:</p>
+            <textarea class="memory-form-desc" name="memory-form-desc" rows="4" cols="50"></textarea>
+            <br>
+            <button type="button" id="add-more-memories">+memory</button>
+         </form>
+            
+         <p class="td-images">Any images?</p>
+         <input class="memory-form-images" type="file" name="images" multiple>
+            
+         <br>
+         <button class="btn btn-submit" type="submit">Submit</button>
+         
+         <script>
+            // duplicate form function
+            // insert duplicate directly after original
+            // replace number in title with number + 1
+            function duplicateForm(form_selector, form_title_selector) {
+               var original = document.querySelector(form_selector);
+               var clone = original.cloneNode(true);
+               original.parentNode.insertBefore(clone, original.nextSibling);
+               var title_num = parseInt(document.querySelector(form_title_selector).innerHTML.replace('#', ''));
+               document.querySelector(form_title_selector).innerHTML = '#' + (title_num + 1);
+            }
+            
+            //button listeners
+            document.querySelector('#add-more-meals').addEventListener('click', function() {
+               duplicateForm('.meal-form', '.meal-form-title');
+            });
+            document.querySelector('#add-more-workouts').addEventListener('click', function() {
+               duplicateForm('.workout-form', '.workout-form-title');
+            });
+            document.querySelector('#add-more-memories').addEventListener('click', function() {
+               duplicateForm('.memory-form', '.memory-form-title');
+            });
+
+            // scale button listeners
+            // if button has class 'suc_btn' then insert value into success variable
+
+            var success = 0;
+            var meal = 0;
+            var workout = 0;
+            
+            document.querySelectorAll('.btn-scale').addEventListener('click', function() {
+               // if button has class 'suc_btn' then insert value into success variable
+               if (this.classList.contains('suc_btn')) {
+                  // insert value into success variable
+                  success = parseInt(this.innerHTML);
+               }
+               // if button has class 'meal_btn' then insert value into meal variable
+               if (this.classList.contains('meal_btn')) {
+                  // insert value into meal variable
+                  meal = parseInt(this.innerHTML);
+               }
+               // if button has class 'workout_btn' then insert value into workout variable
+               if (this.classList.contains('workout_btn')) {
+                  // insert value into workout variable
+                  workout = parseInt(this.innerHTML);
+               }
+            });
+
+            // submit button listener
+            document.querySelector('.btn-submit').addEventListener('click', function() {
+               // make a list of all the values
+               var main_list = {};
+
+               // add success value to list
+               main_list['success'] = success;
+
+               // add all meal values to main list
+               var meal_list = [];
+               var meal_forms = document.querySelectorAll('.meal-form');
+               for (var i = 0; i < meal_forms.length; i++) {
+                  var meal_form = meal_forms[i];
+                  var meal_form_list = {};
+                  meal_form_list['meal'] = meal;
+                  meal_form_list['meal_desc'] = meal_form.querySelector('.meal-form-desc').value;
+                  meal_list.push(meal_form_list);
+               }
+               main_list['meals'] = meal_list;
+
+               // add all workout values to main list
+               var workout_list = [];
+               var workout_forms = document.querySelectorAll('.workout-form');
+               for (var i = 0; i < workout_forms.length; i++) {
+                  var workout_form = workout_forms[i];
+                  var workout_form_list = {};
+                  workout_form_list['workout'] = workout;
+                  workout_form_list['workout_desc'] = workout_form.querySelector('.workout-form-desc').value;
+                  workout_list.push(workout_form_list);
+               }
+               main_list['workouts'] = workout_list;
+
+               // add all memory values to main list
+               var memory_list = [];
+               var memory_forms = document.querySelectorAll('.memory-form');
+               for (var i = 0; i < memory_forms.length; i++) {
+                  var memory_form = memory_forms[i];
+                  var memory_form_list = {};
+                  memory_form_list['memory_subject'] = memory_form.querySelector('.memory-form-subject').value;
+                  memory_form_list['memory_desc'] = memory_form.querySelector('.memory-form-desc').value;
+                  memory_list.push(memory_form_list);
+               }
+               main_list['memories'] = memory_list;
+
+               // add all image values to main list
+               var image_list = [];
+               var image_forms = document.querySelectorAll('.memory-form-images');
+               for (var i = 0; i < image_forms.length; i++) {
+                  var image_form = image_forms[i];
+                  var image_form_list = {};
+                  image_form_list['image'] = image_form.value;
+                  image_list.push(image_form_list);
+               }
+               main_list['images'] = image_list;
+
+               // print all values to screen
+               console.log(main_list);
+
+               // create a custom form
+               // add all values to form
+               // submit form via post request to server
+
+               var form = document.createElement('form');
+               form.setAttribute('method', 'post');
+               form.setAttribute('action', 'http://localhost:8000/submit');
+
+               var hiddenField = document.createElement('input');
+               hiddenField.setAttribute('type', 'hidden');
+               hiddenField.setAttribute('name', 'data');
+               hiddenField.setAttribute('value', JSON.stringify(main_list));
+               form.appendChild(hiddenField);
+
+               document.body.appendChild(form);
+
+               form.submit();
+
+            });
+
+         </script>
+      </div>
    </body>
 </html>

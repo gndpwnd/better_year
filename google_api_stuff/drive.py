@@ -1,12 +1,12 @@
 # Access google drive for generating reports and accessing report history
 
-import flask
 from flask import Blueprint, render_template
 
-import google.auth
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
+from google.oauth2.credentials import Credentials
+
+from google_api_stuff.cal import add_report_submission, delete_report_submission
 
 report_app = Blueprint('report', __name__, template_folder='templates')
 
@@ -18,8 +18,9 @@ def report():
 def history():
     return render_template('report/history.html')
 
-@report_app.route('/report/create')
+@report_app.route('/report/create', methods = ['POST', 'GET'])
 def create():
+    # build a form for user input
     return render_template('report/create.html')
 
 @report_app.route('/report/edit')
@@ -30,29 +31,26 @@ def edit():
 def delete():
     return render_template('report/delete.html')
 
-def get_token():
-    token = flask.session['google_token']
-    return token
-
-def view_history():
-    # get token from flask session
-    token = get_token()
-
-    # get credentials from token
-    credentials = google.oauth2.credentials.Credentials(
-        token['access_token'],
-        refresh_token=token['refresh_token'],
+def make_service(token):
+    # use token to get calender data
+    creds = Credentials(
+        token=token['access_token'],
         token_uri='https://accounts.google.com/o/oauth2/token',
-        client_id='FN_CLIENT_ID',
-        client_secret='FN_CLIENT_SECRET',
-        scopes=['https://www.googleapis.com/auth/drive']
+        client_id=os.environ.get('FN_CLIENT_ID'),
+        client_secret=os.environ.get('FN_CLIENT_SECRET'),
+        scopes=['https://www.googleapis.com/auth/tasks']
     )
 
-    # create drive service
-    drive_service = build('drive', 'v3', credentials=credentials)
+    service = build('calendar', 'v3', credentials=creds)
 
-    # get files
-    results = drive_service.files().list(
+    return service
+
+def check_defaults(service):
+    folder_name = 'BetterYear Reports'
+    first_file_name = 'BetterYear_1.pdf'
+
+    # check if folder exists
+    results = service.files().list(
         pageSize=10, fields="nextPageToken, files(id, name)").execute()
     items = results.get('files', [])
 
@@ -63,54 +61,21 @@ def view_history():
         for item in items:
             print(u'{0} ({1})'.format(item['name'], item['id']))
 
-def create_report():
-    # get token from flask session
-    token = get_token()
+def view_history(service):
 
-    # get credentials from token
-    credentials = google.oauth2.credentials.Credentials(
-        token['access_token'],
-        refresh_token=token['refresh_token'],
-        token_uri='https://accounts.google.com/o/oauth2/token',
-        client_id='FN_CLIENT_ID',
-        client_secret='FN_CLIENT_SECRET',
-        scopes=['https://www.googleapis.com/auth/drive']
-    )
+    # get files
+    results = service.files().list(
+        pageSize=10, fields="nextPageToken, files(id, name)").execute()
+    items = results.get('files', [])
 
-    # create drive service
-    drive_service = build('drive', 'v3', credentials=credentials)
+    if not items:
+        print('No files found.')
+    else:
+        print('Files:')
+        for item in items:
+            print(u'{0} ({1})'.format(item['name'], item['id']))
 
-    # create file metadata
-    file_metadata = {
-        'name': 'report.pdf',
-        'mimeType': 'application/pdf'
-    }
-
-    # create media object
-    media = MediaFileUpload('report.pdf', mimetype='application/pdf')
-
-    # upload file
-    file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-
-    # print file id
-    print('File ID: %s' % file.get('id'))
-
-def edit_report():
-    # get token from flask session
-    token = get_token()
-
-    # get credentials from token
-    credentials = google.oauth2.credentials.Credentials(
-        token['access_token'],
-        refresh_token=token['refresh_token'],
-        token_uri='https://accounts.google.com/o/oauth2/token',
-        client_id='FN_CLIENT_ID',
-        client_secret='FN_CLIENT_SECRET',
-        scopes=['https://www.googleapis.com/auth/drive']
-    )
-
-    # create drive service
-    drive_service = build('drive', 'v3', credentials=credentials)
+def create_report(service):
 
     # create file metadata
     file_metadata = {
@@ -122,27 +87,45 @@ def edit_report():
     media = MediaFileUpload('report.pdf', mimetype='application/pdf')
 
     # upload file
-    file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+    file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
 
     # print file id
     print('File ID: %s' % file.get('id'))
 
-def delete_report():
-    # get token from flask session
-    token = get_token()
+def edit_report(service):
 
-    # get credentials from token
-    credentials = google.oauth2.credentials.Credentials(
-        token['access_token'],
-        refresh_token=token['refresh_token'],
-        token_uri='https://accounts.google.com/o/oauth2/token',
-        client_id='FN_CLIENT_ID',
-        client_secret='FN_CLIENT_SECRET',
-        scopes=['https://www.googleapis.com/auth/drive']
-    )
+    # create file metadata
+    file_metadata = {
+        'name': 'report.pdf',
+        'mimeType': 'application/pdf'
+    }
 
-    # create drive service
-    drive_service = build('drive', 'v3', credentials=credentials)
+    # create media object
+    media = MediaFileUpload('report.pdf', mimetype='application/pdf')
+
+    # upload file
+    file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+
+    # print file id
+    print('File ID: %s' % file.get('id'))
+
+def delete_report(service):
 
     # delete file
-    drive_service.files().delete(fileId='FILE_ID').execute()
+    service.files().delete(fileId='FILE_ID').execute()
+
+def handler(token, inp):
+    service = make_service(token)
+    check_defaults(service)
+    if inp == 'hist':
+        return view_history(service)
+    elif inp == 'crea':
+        return create_report(service)
+    elif inp == 'edit':
+        return edit_report(service)
+    elif inp == 'dele':
+        return delete_report(service)
+    elif inp == 'chec':
+        pass
+    else:
+        return 'error'
