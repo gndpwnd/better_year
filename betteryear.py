@@ -6,6 +6,7 @@ from authlib.integrations.flask_client import OAuth
 import google_api_stuff.drive as report_app
 import google_api_stuff.acc as acc
 import google_api_stuff.tasks as tasks_app
+import google_api_stuff.cal as cal
 #import google_api_stuff.calendar as google_calendar
 
 app = Flask(__name__)
@@ -19,7 +20,7 @@ app.register_blueprint(tasks_app.goals_app)
 
 app.config['SERVER_NAME'] = 'localhost:8000'
 
-@app.route('/submit', methods=['POST'])
+@app.route('/reporttmp', methods=['POST'])
 def submit():
     # print data from form to console
     print(request.form)
