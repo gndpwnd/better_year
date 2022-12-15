@@ -5,21 +5,19 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Better Year</title>
       <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}"/>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/history.css')}}"/>
    </head>
    <body id="everything">
       <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
         <h1 id="title">Reporting History</h1>
-         {% for folder in folder_names %}
+         <hr id="mainhr">
+         {% for report in reports %}
             <div class="report">
-               <p>{{ folder }}</p>
-               {% for report in reports %}
-               {% if report[0] == folder %}
-                  <p>{{ report[1][0] }}</p>
-                  <p>{{ report[1][1] }}</p>
-                  <p>View report <a href="{{ report[1][2] }}">here</a></p>
-               {% endif %}
-               {% endfor %}
+                  <p id="1">{{ report[0] }}</p>
+                  <p id="2">{{ report[1] }}</p>
+                  <p id="3">View report <a href="{{ report[2] }}" target="_blank">here</a></p>
             </div>
+            <hr id="subhr">
          {% endfor %}
    </body>
 </html>

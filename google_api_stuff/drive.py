@@ -17,8 +17,8 @@ def report():
 
 @report_app.route('/report/history')
 def history():
-    folder_names, reports = view_history(flask.session['google_token'])
-    return render_template('report/history.html', folder_names=folder_names, reports=reports)
+    reports = view_history(flask.session['google_token'], flask.session['client_tz'])
+    return render_template('report/history.html', reports=reports)
 
 @report_app.route('/report/create', methods = ['POST', 'GET'])
 def create():
@@ -79,12 +79,41 @@ def get_main_folder_id(service):
 
     return folder_id
 
-def get_files_in_folder(service, folder_id, main_folder_id):
+def conv_ctime_to_tz(ctime, tz):
+    # convert createdTime to given timezone
+    # timezone is number of hours from UTC
+    ctime_d = ctime.split('T')[0].replace('-', '/')
+    ctime_hr = ctime.split('T')[1].split('.')[0]
+
+    ctime_hr = ctime_hr.split(':')
+    ctime_hr[0] = int(ctime_hr[0]) + int(tz)
+    
+    # if hour is less than 0, subtract a day
+    if ctime_hr[0] < 0:
+        ctime_hr[0] = 24 + ctime_hr[0]
+        ctime_d = ctime_d.split('/')
+        ctime_d[2] = str(int(ctime_d[2]) - 1)
+        ctime_d = '/'.join(ctime_d)
+    elif ctime_hr[0] > 23:
+        ctime_hr[0] = ctime_hr[0] - 24
+        ctime_d = ctime_d.split('/')
+        ctime_d[2] = str(int(ctime_d[2]) + 1)
+        ctime_d = '/'.join(ctime_d)
+
+    # if am or pm
+    if ctime_hr[0] >= 12:
+        ctime_hr = ':'.join([str(x) for x in ctime_hr]) + " PM"
+    elif ctime_hr[0] < 12:
+        ctime_hr = ':'.join([str(x) for x in ctime_hr]) + " AM"
+
+    return ctime_d + " " + ctime_hr
+
+def get_files_in_folder(service, folder_id, tz):
     # get files in folder that is in main folder
     files = service.files().list(
-        q="'" + str(folder_id) + "' in parents and '" + str(main_folder_id) + "' in parents",
+        q="'" + str(folder_id) + "' in parents",
         spaces='drive',
-        fields='nextPageToken, files(id, name)',
+        fields='nextPageToken, files(id, name, createdTime)',
         pageToken=None
     ).execute()
 
@@ -95,47 +124,33 @@ def get_files_in_folder(service, folder_id, main_folder_id):
     
     for file in files['files']:
         file_ids.append(file['id'])
+
         file_names.append(file['name'])
-        file_dates.append(file['createdTime'])
-        file_links.append("https://drive.google.com/file/d/" + file['id'] + "/view?usp=sharing")
+
+        ctime = file['createdTime']
+        ctime = conv_ctime_to_tz(ctime, tz)
+        file_dates.append(ctime)
+
+        f_lnk = "https://drive.google.com/file/d/" + file['id'] + "/view?usp=sharing"
+        file_links.append(f_lnk)
 
     return file_names, file_dates, file_links
 
-def view_history(token):
+def view_history(token, tz):
     
     service = make_service(token)
     main_folder_id = get_main_folder_id(service)
     
-    # get folders in main folder
+    # get files in main folder
+    file_names, file_dates, file_links = get_files_in_folder(service, main_folder_id, tz)
 
-    folders = service.files().list(
-        q="mimeType='application/vnd.google-apps.folder' and '" + main_folder_id + "' in parents",
-        spaces='drive',
-        fields='nextPageToken, files(id, name)',
-        pageToken=None
-    ).execute()
-
-    # get folder ids
-    folder_ids = []
-    for folder in folders['files']:
-        folder_ids.append(folder['id'])
-
-    # get folder names
-    folder_names = []
-    for folder in folders['files']:
-        folder_names.append(folder['name'])
-
-    # get files for every folder
     reports = []
-    for folder in range(len(folder_ids)):
+    for i in range(len(file_names)):
+        reports.append([file_names[i], file_dates[i], file_links[i]])
+        # organize reports by date
+        reports.sort(key=lambda x: x[1], reverse=False)
 
-        folder_name = folder_names[folder]
-        file_names, file_dates, file_links = get_files_in_folder(service, folder, main_folder_id)
-        
-        for i in range(len(file_names)):
-            reports.append([folder_name, [file_dates[i], file_names[i], file_links[i]]])
-
-    return folder_names, reports
+    return reports
 
 # create a report
 # edit a report
