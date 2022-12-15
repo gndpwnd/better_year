@@ -9,6 +9,10 @@
    </head>
    <body id="everything">
       <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
+      {% if data %}
+      <h1 id="title">Edit Report</h1>
+      
+      {% else %}
       <h1 id="title">Create a New Report</h1>
       <div class="report-form">
 
@@ -88,6 +92,7 @@
          </form>
             
          <p class="td-images">Any images?</p>
+         <p class="td-images-note">Note: Hold down "CTRL + SHIFT" while clicking to select multiple images to upload</p>
          <input class="memory-form-images" type="file" name="images" multiple>
             
          <br>
@@ -220,6 +225,7 @@
             });
 
          </script>
+         {% endif %}
       </div>
    </body>
 </html>

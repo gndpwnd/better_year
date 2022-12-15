@@ -1,10 +1,11 @@
 # Access google drive for creating, modifying, deleting, and accessing report history
 
+import io
 import os
 import flask
 from flask import Blueprint, render_template
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
+from googleapiclient.http import MediaFileUpload, MediaIoBaseUpload
 from google.oauth2.credentials import Credentials
 
 from google_api_stuff.cal import add_report_submission, delete_report_submission
@@ -25,13 +26,25 @@ def create():
     # build a form for user input
     return render_template('report/create.html')
 
-@report_app.route('/report/edit')
+@report_app.route('/report/edit', methods = ['POST', 'GET'])
 def edit():
-    return render_template('report/edit.html')
+    edit_report_id = flask.request.args.get('id')
+    data = edit_report(flask.session['google_token'], edit_report_id)
+    # auto populate create form with data
+    # redirect to create page
+    return render_template('report/create.html', data=data)
 
-@report_app.route('/report/delete')
+@report_app.route('/report/delete', methods = ['POST', 'GET'])
 def delete():
-    return render_template('report/delete.html')
+    if flask.request.method == 'POST':
+        # get report id from url param
+        report_id = flask.request.args.get('id')
+
+        # delete report submission
+        delete_report(flask.session['google_token'], report_id)
+
+    # redirect to history page
+    return flask.redirect(flask.url_for('report.history'))
 
 def make_service(token):
     # use token to get calender data
@@ -134,7 +147,7 @@ def get_files_in_folder(service, folder_id, tz):
         f_lnk = "https://drive.google.com/file/d/" + file['id'] + "/view?usp=sharing"
         file_links.append(f_lnk)
 
-    return file_names, file_dates, file_links
+    return file_ids, file_names, file_dates, file_links
 
 def view_history(token, tz):
     
@@ -142,16 +155,58 @@ def view_history(token, tz):
     main_folder_id = get_main_folder_id(service)
     
     # get files in main folder
-    file_names, file_dates, file_links = get_files_in_folder(service, main_folder_id, tz)
+    file_ids, file_names, file_dates, file_links = get_files_in_folder(service, main_folder_id, tz)
 
     reports = []
     for i in range(len(file_names)):
-        reports.append([file_names[i], file_dates[i], file_links[i]])
+        reports.append([file_ids[i], file_names[i], file_dates[i], file_links[i]])
         # organize reports by date
         reports.sort(key=lambda x: x[1], reverse=False)
 
     return reports
 
 # create a report
+
+def upload_report(token, report_name, meals, workouts, memories,):
+    service = make_service(token)
+    main_folder_id = get_main_folder_id(service)
+
+    # create google doc in main folder
+    file_metadata = {
+        'name': report_name,
+        'parents': [main_folder_id],
+        'mimeType': 'application/vnd.google-apps.document'
+    }
+    file = service.files().create(body=file_metadata, fields='id').execute()
+
+    doc_id = file.get("id")
+
+    # upload text to doc
+    text = "Report: " + report_name
+    text = text.encode('utf-8')
+    media = MediaIoBaseUpload(io.BytesIO(text), mimetype='text/plain')
+    service.files().update(fileId=doc_id, media_body=media).execute()
+
 # edit a report
-# delete a report
+
+def edit_report(token, report_id):
+    # auto populate create report form with report data
+    service = make_service(token)
+    report = service.files().get(fileId=report_id).execute()
+
+    report_name = report['name']
+
+    # get text from doc
+    request = service.files().export_media(fileId=report_id, mimeType='text/plain')
+    text = request.execute().decode('utf-8')
+
+    # get meals, workouts, memories
+    meals = []
+    workouts = []
+    memories = []
+
+    return report_name, meals, workouts, memories
+
+def delete_report(token, report_id):
+    service = make_service(token)
+    service.files().delete(fileId=report_id).execute()
