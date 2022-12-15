@@ -21,7 +21,7 @@ app.register_blueprint(tasks_app.goals_app)
 app.config['SERVER_NAME'] = 'localhost:8000'
 
 @app.route('/reporttmp', methods=['POST'])
-def submit():
+def reporttmp():
     # print data from form to console
     print(request.form)
 
@@ -50,6 +50,15 @@ def index():
             )
     else:
         return render_template('need_auth.html')
+
+@app.route('/about')
+def about():
+    return render_template(
+                'about.html', 
+                name = flask.session['user_name'],
+                dob = acc.get_birthday(flask.session['google_token']),
+                tz = flask.session['client_tz'],
+            )
 
 @app.route('/google/')
 def google():

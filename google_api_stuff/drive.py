@@ -1,7 +1,8 @@
-# Access google drive for generating reports and accessing report history
+# Access google drive for creating, modifying, deleting, and accessing report history
 
+import os
+import flask
 from flask import Blueprint, render_template
-
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.credentials import Credentials
@@ -16,7 +17,8 @@ def report():
 
 @report_app.route('/report/history')
 def history():
-    return render_template('report/history.html')
+    folder_names, reports = view_history(flask.session['google_token'])
+    return render_template('report/history.html', folder_names=folder_names, reports=reports)
 
 @report_app.route('/report/create', methods = ['POST', 'GET'])
 def create():
@@ -38,94 +40,103 @@ def make_service(token):
         token_uri='https://accounts.google.com/o/oauth2/token',
         client_id=os.environ.get('FN_CLIENT_ID'),
         client_secret=os.environ.get('FN_CLIENT_SECRET'),
-        scopes=['https://www.googleapis.com/auth/tasks']
+        scopes=['https://www.googleapis.com/auth/drive']
     )
 
-    service = build('calendar', 'v3', credentials=creds)
+    service = build('drive', 'v3', credentials=creds)
 
     return service
 
-def check_defaults(service):
-    folder_name = 'BetterYear Reports'
-    first_file_name = 'BetterYear_1.pdf'
+def get_main_folder_id(service):
 
-    # check if folder exists
-    results = service.files().list(
-        pageSize=10, fields="nextPageToken, files(id, name)").execute()
-    items = results.get('files', [])
+    expected_folder_name = 'BetterYear Reports'
 
-    if not items:
-        print('No files found.')
-    else:
-        print('Files:')
-        for item in items:
-            print(u'{0} ({1})'.format(item['name'], item['id']))
+    folder = service.files().list(
+        q="name='" + expected_folder_name + "'",
+        spaces='drive',
+        fields='nextPageToken, files(id, name)',
+        pageToken=None
+    ).execute()
 
-def view_history(service):
+    folder_id = ""
 
-    # get files
-    results = service.files().list(
-        pageSize=10, fields="nextPageToken, files(id, name)").execute()
-    items = results.get('files', [])
-
-    if not items:
-        print('No files found.')
-    else:
-        print('Files:')
-        for item in items:
-            print(u'{0} ({1})'.format(item['name'], item['id']))
-
-def create_report(service):
-
-    # create file metadata
-    file_metadata = {
-        'name': 'report.pdf',
-        'mimeType': 'application/pdf'
-    }
-
-    # create media object
-    media = MediaFileUpload('report.pdf', mimetype='application/pdf')
-
-    # upload file
-    file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-
-    # print file id
-    print('File ID: %s' % file.get('id'))
-
-def edit_report(service):
-
-    # create file metadata
-    file_metadata = {
-        'name': 'report.pdf',
-        'mimeType': 'application/pdf'
-    }
-
-    # create media object
-    media = MediaFileUpload('report.pdf', mimetype='application/pdf')
-
-    # upload file
-    file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-
-    # print file id
-    print('File ID: %s' % file.get('id'))
-
-def delete_report(service):
-
-    # delete file
-    service.files().delete(fileId='FILE_ID').execute()
-
-def handler(token, inp):
-    service = make_service(token)
-    check_defaults(service)
-    if inp == 'hist':
-        return view_history(service)
-    elif inp == 'crea':
-        return create_report(service)
-    elif inp == 'edit':
-        return edit_report(service)
-    elif inp == 'dele':
-        return delete_report(service)
-    elif inp == 'chec':
+    try:
+        folder_name = folder['files'][0]['name']
+        if folder_name == expected_folder_name:
+            folder_id = folder['files'][0]['id']
+    except:
         pass
-    else:
-        return 'error'
+
+    if folder_id == "":
+        # make folder
+        file_metadata = {
+            'name': expected_folder_name,
+            'mimeType': 'application/vnd.google-apps.folder'
+        }
+        file = service.files().create(body=file_metadata, fields='id').execute()
+
+        folder_id = file.get("id")
+
+    return folder_id
+
+def get_files_in_folder(service, folder_id, main_folder_id):
+    # get files in folder that is in main folder
+    files = service.files().list(
+        q="'" + str(folder_id) + "' in parents and '" + str(main_folder_id) + "' in parents",
+        spaces='drive',
+        fields='nextPageToken, files(id, name)',
+        pageToken=None
+    ).execute()
+
+    file_ids = []
+    file_names = []
+    file_dates = []
+    file_links = []
+    
+    for file in files['files']:
+        file_ids.append(file['id'])
+        file_names.append(file['name'])
+        file_dates.append(file['createdTime'])
+        file_links.append("https://drive.google.com/file/d/" + file['id'] + "/view?usp=sharing")
+
+    return file_names, file_dates, file_links
+
+def view_history(token):
+    
+    service = make_service(token)
+    main_folder_id = get_main_folder_id(service)
+    
+    # get folders in main folder
+
+    folders = service.files().list(
+        q="mimeType='application/vnd.google-apps.folder' and '" + main_folder_id + "' in parents",
+        spaces='drive',
+        fields='nextPageToken, files(id, name)',
+        pageToken=None
+    ).execute()
+
+    # get folder ids
+    folder_ids = []
+    for folder in folders['files']:
+        folder_ids.append(folder['id'])
+
+    # get folder names
+    folder_names = []
+    for folder in folders['files']:
+        folder_names.append(folder['name'])
+
+    # get files for every folder
+    reports = []
+    for folder in range(len(folder_ids)):
+
+        folder_name = folder_names[folder]
+        file_names, file_dates, file_links = get_files_in_folder(service, folder, main_folder_id)
+        
+        for i in range(len(file_names)):
+            reports.append([folder_name, [file_dates[i], file_names[i], file_links[i]]])
+
+    return folder_names, reports
+
+# create a report
+# edit a report
+# delete a report
