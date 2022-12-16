@@ -111,7 +111,7 @@ def delete_report_submission(token, tz, google_drive_report_link):
     event_id = ""
     # find event with matching description
     for event in events:
-        if event['description'] == "'description': 'You can view your report <a href=\"' + google_drive_report_link + '\">here</a>.',":
+        if event['description'] == "'description': 'You can view your report <a href=\"'" + google_drive_report_link + "'\">here</a>.',":
             event_id = event['id']
             break
     

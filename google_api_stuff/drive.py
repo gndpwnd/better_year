@@ -24,7 +24,24 @@ def history():
 @report_app.route('/report/create', methods = ['POST', 'GET'])
 def create():
     # build a form for user input
-    return render_template('report/create.html')
+    return render_template('report/create.html', submission_url=flask.url_for('report.handle_data'))
+
+@report_app.route('/report/submit', methods = ['POST', 'GET'])
+def handle_data():
+    # get data from json data object
+
+    json_data = flask.request.get_json()
+    print(json_data)
+    print("success-rating: " + json_data['success-rating'])
+    # build report
+    #report_name, report = build_report(json_data)
+    # upload file to google drive
+    #report_link = upload_report(flask.session['google_token'], report_name, report)
+    # add report submission to calendar
+    #add_report_submission(flask.session['google_token'], flask.session['client_tz'], report_link)
+    # send user back to history page
+    
+    return flask.redirect(flask.url_for('report.history'))
 
 @report_app.route('/report/edit', methods = ['POST', 'GET'])
 def edit():
@@ -45,6 +62,8 @@ def delete():
 
     # redirect to history page
     return flask.redirect(flask.url_for('report.history'))
+
+
 
 def make_service(token):
     # use token to get calender data
@@ -164,29 +183,6 @@ def view_history(token, tz):
         reports.sort(key=lambda x: x[1], reverse=False)
 
     return reports
-
-# create a report
-
-def upload_report(token, report_name, meals, workouts, memories,):
-    service = make_service(token)
-    main_folder_id = get_main_folder_id(service)
-
-    # create google doc in main folder
-    file_metadata = {
-        'name': report_name,
-        'parents': [main_folder_id],
-        'mimeType': 'application/vnd.google-apps.document'
-    }
-    file = service.files().create(body=file_metadata, fields='id').execute()
-
-    doc_id = file.get("id")
-
-    # upload text to doc
-    text = "Report: " + report_name
-    text = text.encode('utf-8')
-    media = MediaIoBaseUpload(io.BytesIO(text), mimetype='text/plain')
-    service.files().update(fileId=doc_id, media_body=media).execute()
-
 # edit a report
 
 def edit_report(token, report_id):
@@ -209,4 +205,57 @@ def edit_report(token, report_id):
 
 def delete_report(token, report_id):
     service = make_service(token)
+    # create report link 
+    report_link = "https://drive.google.com/file/d/" + report_id + "/view?usp=sharing"
+    # delete report from calendar
+    try:
+        delete_report_submission(token, flask.session['client_tz'], report_link)
+    except:
+        pass
+    # delete report from google drive
     service.files().delete(fileId=report_id).execute()
+
+# build a report
+
+def build_report(json_data):
+    # build report from json data
+    report_name = json_data['report_name']
+    report = """
+    Report: """ + json_data['report_name'] + """
+    Meals:
+    """ + json_data['meals'] + """
+    Workouts:
+    """ + json_data['workouts'] + """
+    Memories:
+    """ + json_data['memories'] + """
+    Images:
+    """ + json_data['images']
+
+    return report_name, report
+
+# upload a report build
+
+def upload_report(token, report_name, report):
+    service = make_service(token)
+    main_folder_id = get_main_folder_id(service)
+
+    # create google doc in main folder
+    file_metadata = {
+        'name': report_name,
+        'parents': [main_folder_id],
+        'mimeType': 'application/vnd.google-apps.document'
+    }
+    file = service.files().create(body=file_metadata, fields='id').execute()
+
+    doc_id = file.get("id")
+
+    # upload text to doc
+    text = "Report: " + report_name
+    text = text.encode('utf-8')
+    media = MediaIoBaseUpload(io.BytesIO(text), mimetype='text/plain')
+    service.files().update(fileId=doc_id, media_body=media).execute()
+
+    # return report link
+    report_link = "https://docs.google.com/document/d/" + doc_id + "/edit?usp=sharing"
+
+    return report_link
