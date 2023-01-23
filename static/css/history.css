@@ -1,0 +1,32 @@
+body{
+    background-color: #222222;
+    color: #f5f5f5;
+}
+
+a {
+    color: aqua;
+}
+
+#mainhr { color:#7DF9FF;
+    width:50%;
+    margin: 3% auto auto auto;
+    height: .2px;
+    border-radius: 25px;
+}
+
+
+#subhr { color:#7DF9FF;
+    width:25%;
+    margin: auto;
+    height: .2px;
+    border-radius: 25px;
+}
+
+.report {
+    padding: 20px;
+    width: 50%;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}

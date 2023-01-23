@@ -1,0 +1,43 @@
+/* Add a background color */
+body {
+    background-color: #222222 ;
+}
+
+/* Center the logo and title */
+#logo {
+    display: block;
+    margin: 0 auto;
+}
+
+#title {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 36px;
+    font-weight: bold;
+    color: #F5F5F5;
+}
+
+/* Center and style the description text */
+#description {
+    text-align: center;
+    font-size: 18px;
+    color: #F5F5F5;
+    margin-top: 30px;
+}
+
+/* Style the login button */
+#description a {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 18px;
+    color: #fff;
+    background-color: #00b0ff;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 30px;
+}
+
+/* Add hover effect to login button */
+#description a:hover {
+    background-color: #0091ea;
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Better Year</title>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}"/>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/history.css')}}"/>
+   </head>
+   <body id="everything">
+      <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
+        <h1 id="title">Reporting History</h1>
+         <hr id="mainhr">
+         {% for report in reports %}
+            <div class="report">
+                  <p id="1">{{ report[1] }}</p>
+                  <p id="2">{{ report[2] }}</p>
+                  <p id="3">View report <a href="{{ report[3] }}" target="_blank">here</a></p>
+                  <p id="4">Edit report <a href="{{ report[4] }}" target="_blank">here</a></p>
+                  <!-- delete button -->
+                  <form action="/report/delete?id={{ report[0] }}" method="POST">
+                        <input type="submit" value="Delete">
+                  </form>
+            </div>
+            <hr id="subhr">
+         {% endfor %}
+   </body>
+</html>

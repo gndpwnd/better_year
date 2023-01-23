@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Better Year</title>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/tz_select.css')}}"/>
+   </head>
+   <body id="everything">
+      <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
+      <h1 id="title">{{ name }} | {{ dob }}</h1>
+      <div class="tz-form-div">
+         <p id="tz-form-desc">Please Select a Timezone<br>If unsure, refer to <a href="https://24timezones.com/timezone-map" target="_blank">this website</a>.<br> </p>
+         <form id="tz-form" action="/" method="POST">
+            <input type="hidden" id="timezone" name="timezone">
+            <table id="timezone-grid">
+               <tr>
+                  <td><button value="-12">UTC -12</button></td>
+                  <td><button value="-11">UTC -11</button></td>
+                  <td><button value="-10">UTC -10</button></td>
+                  <td><button value="-9">UTC -9</button></td>
+                  <td><button value="-8">UTC -8</button></td>
+               </tr>
+               <tr>
+                  <td><button value="-7">UTC -7</button></td>
+                  <td><button value="-6">UTC -6</button></td>
+                  <td><button value="-5">UTC -5</button></td>
+                  <td><button value="-4">UTC -4</button></td>
+                  <td><button value="-3">UTC -3</button></td>
+               </tr>
+               <tr>
+                  <td><button value="-2">UTC -2</button></td>
+                  <td><button value="-1">UTC -1</button></td>
+                  <td><button value="0">UTC 0</button></td>
+                  <td><button value="1">UTC +1</button></td>
+                  <td><button value="2">UTC +2</button></td>
+               </tr>
+               <tr>
+                  <td><button value="3">UTC +3</button></td>
+                  <td><button value="4">UTC +4</button></td>
+                  <td><button value="5">UTC +5</button></td>
+                  <td><button value="6">UTC +6</button></td>
+                  <td><button value="7">UTC +7</button></td>
+               </tr>
+               <tr>
+                  <td><button value="8">UTC +8</button></td>
+                  <td><button value="9">UTC +9</button></td>
+                  <td><button value="10">UTC +10</button></td>
+                  <td><button value="11">UTC +11</button></td>
+                  <td><button value="12">UTC +12</button></td>
+               </tr>
+            </table>
+
+            <script>
+               // add event listeners to buttons
+               const buttons = document.querySelectorAll('#timezone-grid button');
+               buttons.forEach(button => {
+                  button.addEventListener('click', () => {
+                     document.getElementById('timezone').value = button.value;
+                     document.getElementById('tz-form').submit();
+                  });
+               });
+            </script>
+            </form>
+         </div>
+   </body>
+</html>

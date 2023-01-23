@@ -1,0 +1,63 @@
+body {
+    background-color: #222222;
+    color: #f5f5f5;
+    font-family: 'Open Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#logo {
+    width: 150px;
+    margin: 20px auto;
+    display: block;
+}
+
+#title {
+    text-align: center;
+    font-size: 3em;
+    font-weight: 600;
+    margin: 50px 0;
+    text-shadow: 2px 2px #444444;
+}
+
+#tz-form-div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+#tz-form-desc {
+    text-align: center;
+    font-size: 2em;
+}
+
+#timezone-grid {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#timezone-grid button {
+    width: 75px;
+    height: 75px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    margin: 10px;
+    background-color: #00acee;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#timezone-grid button:hover {
+    background-color: #1795E8;
+}
+
+a {
+    color: #00acee;
+}
+

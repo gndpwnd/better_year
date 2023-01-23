@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Better Year</title>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/need_auth.css')}}"/>
+   </head>
+   <body id="everything">
+      <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
+      <h1 id="title">Authentication Required!</h1>
+      <p id="description">
+            Please connect your google account to continue.
+            <br>
+            <br>
+            <a href="/google">Click Here to Login</a>
+      </p>
+   </body>
+</html>

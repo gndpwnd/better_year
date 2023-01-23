@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Better Year</title>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/report.css')}}"/>
+   </head>
+   <body id="everything">
+      <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
+      <h1 id="title">Edit Report</h1>
+
+      <h1 id="title">Create a New Report Part 1</h1>
+      
+      <button id="clear-form">Clear This Form</button>
+
+      <div class="report-form">
+
+      <form method="post" action="{{ submission_url }}" enctype="multipart/form-data">
+         <div id="day_summary">
+               <label for="day_summary_desc">Today's Summary</label>
+               <textarea id="day_summary_desc" name="day_summary_desc"></textarea>
+         </div>
+         
+         <div id="workout_descriptions">
+            <h3>Workout Descriptions</h3>
+            <div id="workout_description_1">
+                  <label for="workout_description_1">Workout Description 1:</label>
+                  <textarea id="workout_description_1" name="workout_description_1"></textarea>
+            </div>
+         </div>
+         <button id="add_workout_description" type="button">Add another workout description</button>
+
+         <div id="meal_descriptions">
+            <h3>Meal Descriptions</h3>
+            <div id="meal_description_1">
+                  <label for="meal_description_1">Meal Description 1:</label>
+                  <textarea id="meal_description_1" name="meal_description_1"></textarea>
+            </div>
+         </div>
+         <button id="add_meal_description" type="button">Add another meal description</button>
+
+         <div id="memory_topics">
+            <h3>Memory Topics</h3>
+            <div id="memory_topic_1">
+                  <label for="memory_topic_1">Memory Topic 1:</label>
+                  <input type="text" id="memory_topic_1" name="memory_topic_1">
+            </div>
+         </div>
+         <button id="add_memory_topic" type="button">Add another memory topic</button>
+
+         <div id="memory_descriptions">
+            <h3>Memory Descriptions</h3>
+            <div id="memory_description_1">
+                  <label for="memory_description_1">Memory Description 1:</label>
+                  <textarea id="memory_description_1" name="memory_description_1"></textarea>
+            </div>
+         </div>
+         <button id="add_memory_description" type="button">Add another memory description</button>
+         <div id="image-uploads">
+            <label for="image">Select images (png, jpeg, jpg, webp):</label>
+            <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg, image/webp" multiple>
+         </div>
+         <input type="submit" value="Submit">
+</form>
+
+   <script>
+      var workout_description_count = 1;
+      var meal_description_count = 1;
+      var memory_topic_count = 1;
+      var memory_description_count = 1;
+
+      // Add another workout description
+      document.getElementById('add_workout_description').addEventListener('click', function(){
+         workout_description_count++;
+         var div = document.createElement('div');
+         div.innerHTML = '<label for="workout_description_' + workout_description_count + '">Workout Description ' + workout_description_count + ':</label><textarea id="workout_description_' + workout_description_count + '" name="workout_description_' + workout_description_count + '"></textarea>';
+         document.getElementById('workout_descriptions').appendChild(div);
+      });
+      // Add another meal description
+      document.getElementById('add_meal_description').addEventListener('click', function(){meal_description_count++;
+         var div = document.createElement('div');
+         div.innerHTML = '<label for="meal_description_' + meal_description_count + '">Meal Description ' + meal_description_count + ':</label><textarea id="meal_description_' + meal_description_count + '" name="meal_description_' + meal_description_count + '"></textarea>';
+         document.getElementById('meal_descriptions').appendChild(div);
+      });
+      // Add another memory topic
+      document.getElementById('add_memory_topic').addEventListener('click', function(){
+         memory_topic_count++;
+         var div = document.createElement('div');
+         div.innerHTML = '<label for="memory_topic_' + memory_topic_count + '">Memory Topic ' + memory_topic_count + ':</label><input type="text" id="memory_topic_' + memory_topic_count + '" name="memory_topic_' + memory_topic_count + '">';
+         document.getElementById('memory_topics').appendChild(div);
+      });
+      // Add another memory description
+      document.getElementById('add_memory_description').addEventListener('click', function(){
+         memory_description_count++;
+         var div = document.createElement('div');
+         div.innerHTML = '<label for="memory_description_' + memory_description_count + '">Memory Description ' + memory_description_count + ':</label><textarea id="memory_description_' + memory_description_count + '" name="memory_description_' + memory_description_count + '"></textarea>';
+         document.getElementById('memory_descriptions').appendChild(div);
+      });
+
+      //when clear button is clicked, remove all duplicated forms and remove text from forms
+      document.getElementById('clear-form').addEventListener('click', function(){
+         var workout_descriptions = document.getElementById('workout_descriptions');
+         var meal_descriptions = document.getElementById('meal_descriptions');
+         var memory_topics = document.getElementById('memory_topics');
+         var memory_descriptions = document.getElementById('memory_descriptions');
+         var day_summary = document.getElementById('day_summary');
+         var image_uploads = document.getElementById('image-uploads');
+
+         while (workout_descriptions.children.length > 2) {
+            workout_descriptions.removeChild(workout_descriptions.lastChild);
+         }
+         while (meal_descriptions.children.length > 2) {
+            meal_descriptions.removeChild(meal_descriptions.lastChild);
+         }
+         while (memory_topics.children.length > 2) {
+            memory_topics.removeChild(memory_topics.lastChild);
+         }
+         while (memory_descriptions.children.length > 2) {
+            memory_descriptions.removeChild(memory_descriptions.lastChild);
+         }
+         while (day_summary.children.length > 2) {
+            day_summary.removeChild(day_summary.lastChild);
+         }
+         while (image_uploads.children.length > 2) {
+            image_uploads.removeChild(image_uploads.lastChild);
+         }
+
+         workout_description_count = 1;
+         meal_description_count = 1;
+         memory_topic_count = 1;
+         memory_description_count = 1;
+
+         // remove text from remaining forms by reloading the page
+         location.reload();
+      });
+   </script>
+   </body>
+</html>

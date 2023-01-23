@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Better Year</title>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/about.css')}}"/>
+   </head>
+   <body id="everything">
+      <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
+      <h1 id="title">{{ name }} | {{ dob }}</h1>
+      <h2 id="subtitle">Usine Timezone: UTC {{ tz }}</h2>
+      
+      <!-- <button id="logout" onclick="window.location.href='/google/logout'">Logout</button> -->
+
+      <div class="about">
+        <!-- bulleted list -->
+        <p>About</p>
+        <ul>
+            <li>BetterYear is essentially a streamlined digital journal</li>
+            <li>"It is a tool to help you reflect on your life" - Github Copilot</li>
+            <li>You login to your google account, select a timezone, and fill in a form</li>
+            <li>A report is generated from the form, and stored in your google drive</li>
+            <li>Additionally, google tasks are generated based on optional goals you fill out</li>
+        </ul>
+        
+        <p>Why BetterYear?</p>
+        <ol>
+            <li>I type faster than I write.</li>
+            <li>I have enough paper to keep track of.</li>
+            <li>I have not been able to find an app that meets my specific needs,
+                <br>
+                so I made my own.
+            </li>
+        </ol>
+
+        <p>Google Account Permissions</p>
+        <ul>
+            <li>BetterYear leverages Google's software powerhouse to organize journal entries</li>
+            <li>This website stores nothing, except a google auth token in your browser's cache</li>
+            <li>Here are references for clearing the browser cache for <a href="https://support.google.com/accounts/answer/32050?hl=en&co=GENIE.Platform%3DDesktop">chrome</a> and <a href="https://support.mozilla.org/en-US/kb/how-clear-firefox-cache">firefox</a></li>
+            <li>However, your data is stored in your google drive, calendar, and tasks</li>
+        </ul>
+
+        <p>Using Your Google Data</p>
+        <ul>
+            <li>Birthday - make a time landmark specific to you</li>
+            <li>Tasks - organize lists of macro and micro goals</li>
+            <li>Drive - store your reports</li>
+            <li>Calendar - help keep track of when you reported what</li>
+        </ul>
+    </div>
+   </body>
+</html>

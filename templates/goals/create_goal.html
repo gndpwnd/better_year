@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Better Year</title>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}"/>
+   </head>
+   <body id="everything">
+      <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
+      <h1 id="title">Goals</h1>
+      <h2 id="subtitle">Macro Goals</h2>
+      <!--Make forms for user input to create a new macro goal-->
+      <form action="/goals" method="POST">
+         <label for="goal_name">Name</label>
+         <input type="text" name="goal_name" id="goal_name" required>
+         <label for="goal_description">Description</label>
+         <input type="text" name="goal_name" id="goal_name" required>
+         <input type="submit" value="Create Goal">
+      </form>
+      <h2 id="subtitle">Micro Goals</h2>
+      <!--Make forms for user input to create a new micro goal-->
+      <form action="/goals" method="POST">
+         <label for="goal_name">Name</label>
+         <input type="text" name="goal_name" id="goal_name" required>
+         <label for="goal_description">Description</label>
+         <input type="text" name="goal_name" id="goal_name" required>
+         <input type="submit" value="Create Goal">
+      </form>
+   </body>
+</html>
