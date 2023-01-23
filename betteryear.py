@@ -2,7 +2,6 @@ import os
 import flask
 from flask import Flask, render_template, url_for, redirect, request, jsonify
 from authlib.integrations.flask_client import OAuth
-
 import google_api_stuff.drive as report_app
 import google_api_stuff.acc as acc
 import google_api_stuff.tasks as tasks_app
