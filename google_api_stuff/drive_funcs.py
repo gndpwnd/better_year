@@ -1,7 +1,7 @@
 import io
 import os
+import datetime
 import flask
-import shutil
 from PIL import Image
 import google_api_stuff.acc as acc
 from datetime import date
@@ -48,6 +48,16 @@ def get_main_folder_id(service):
         #print(f'Folder ID: {folder_id}')
     #else:
         #print(f'No files found.')
+    
+    # If folder does not exist, create it
+    if not files:
+        file_metadata = {
+            'name': folder_name,
+            'mimeType': 'application/vnd.google-apps.folder'
+        }
+        file = service.files().create(body=file_metadata, fields='id').execute()
+        folder_id = file.get('id')
+        #print(f'Folder ID: {folder_id}')
 
     return folder_id
 
@@ -175,7 +185,8 @@ def build_report(token, day_summary, workout_descriptions, meal_descriptions, me
     folder_id = get_main_folder_id(service)
     results = service.files().list(q=f"'{folder_id}' in parents", fields='nextPageToken, files(id, name)').execute()
     num_files = len(results.get('files', []))
-    report_name = "Better Year #" + str(num_files + 1)
+    # add the current date to the ende of the file name
+    report_name = "#" + str(num_files + 1) + " - " + str(datetime.date.today())
 
 
     # get current date

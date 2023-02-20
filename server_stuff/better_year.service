@@ -12,6 +12,6 @@ Environment="FN_CLIENT_SECRET="
 Environment="FLASK_APP=betteryear.py"
 Environment="FN_FLASK_SECRET_KEY="
 Environment="PATH=/opt/better_year/venv/bin"
-ExecStart=/opt/better_year/venv/bin/gunicorn --bind 127.0.0.1:8000 wsgi:app
+ExecStart=cd /opt/better_year && flask run -p 8000
 [Install]
 WantedBy=multi-user.target

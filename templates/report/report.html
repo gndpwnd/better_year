@@ -8,14 +8,12 @@
    </head>
    <body id="everything">
     <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
-        <h1 id="title">Reporting</h1>
+        <h1 id="title" style="margin-bottom: 5%;">Reporting</h1>
         <div class="options">
-            <div>
-                <a href="/report/create" id="option_type1">Create A New Report</a>
-            </div>
-            <div>
-                <a href="/report/history" id="option_type1">View Report History</a>
-            </div>
-        </div>
+         <div class="options-container">
+            <a href="/report/create" class="options-button" id="option_type1">Create A New Report</a>
+            <a href="/report/history" class="options-button" id="option_type1">View Report History</a>
+         </div>
+      </div>
    </body>
 </html>

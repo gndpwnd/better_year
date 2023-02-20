@@ -18,13 +18,14 @@ goals_app = Blueprint('goals', __name__, template_folder='templates')
 
 @goals_app.route('/goals')
 def goals():
+    creds = make_creds(flask.session['google_token'])
     return render_template(
         'goals/goals.html',
-        macro_goals = list_macro_goals(flask.session['google_token']),
-        micro_goals = list_micro_goals(flask.session['google_token']),
+        macro_goals = list_macro_goals(creds),
+        micro_goals = list_micro_goals(creds),
     ) 
 
-def add_macro_goal(token):
+def make_creds(token):
     # use token to get macro goals task list
     creds = Credentials(
         token=token['access_token'],
@@ -33,6 +34,9 @@ def add_macro_goal(token):
         client_secret=os.environ.get('FN_CLIENT_SECRET'),
         scopes=['https://www.googleapis.com/auth/tasks']
     )
+    return creds
+
+def add_macro_goal(creds):
 
     service = build('tasks', 'v1', credentials=creds)
 
@@ -62,15 +66,7 @@ def add_macro_goal(token):
     # add task to macro goals task list
     task = service.tasks().insert(tasklist=macro_tasks_list_id, body=task).execute()
 
-def add_micro_goal(token):
-    # use token to get micro goals task list
-    creds = Credentials(
-        token=token['access_token'],
-        token_uri='https://accounts.google.com/o/oauth2/token',
-        client_id=os.environ.get('FN_CLIENT_ID'),
-        client_secret=os.environ.get('FN_CLIENT_SECRET'),
-        scopes=['https://www.googleapis.com/auth/tasks']
-    )
+def add_micro_goal(creds):
 
     service = build('tasks', 'v1', credentials=creds)
 
@@ -100,18 +96,9 @@ def add_micro_goal(token):
     # add task to micro goals task list
     task = service.tasks().insert(tasklist=micro_tasks_list_id, body=task).execute()
 
-def list_macro_goals(token):
+def list_macro_goals(creds):
     
     macro_task_titles = []
-
-    # use token to get macro goals task list
-    creds = Credentials(
-        token=token['access_token'],
-        token_uri='https://accounts.google.com/o/oauth2/token',
-        client_id=os.environ.get('FN_CLIENT_ID'),
-        client_secret=os.environ.get('FN_CLIENT_SECRET'),
-        scopes=['https://www.googleapis.com/auth/tasks']
-    )
 
     service = build('tasks', 'v1', credentials=creds)
 
@@ -176,18 +163,9 @@ def list_macro_goals(token):
     # return tasks
     return macro_task_titles
 
-def list_micro_goals(token):
+def list_micro_goals(creds):
 
     micro_tasks_titles = []
-
-    # use token to get micro goals task list
-    creds = Credentials(
-        token=token['access_token'],
-        token_uri='https://accounts.google.com/o/oauth2/token',
-        client_id=os.environ.get('FN_CLIENT_ID'),
-        client_secret=os.environ.get('FN_CLIENT_SECRET'),
-        scopes=['https://www.googleapis.com/auth/tasks']
-    )
 
     service = build('tasks', 'v1', credentials=creds)
 

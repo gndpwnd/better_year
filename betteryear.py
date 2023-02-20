@@ -104,6 +104,16 @@ def google_auth():
     flask.session['user_folder'] = user_folder
     return redirect('/')
 
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    flask.session.pop('google_token', None)
+    flask.session.pop('user_name', None)
+    flask.session.pop('user_id', None)
+    flask.session.pop('client_tz', None)
+    flask.session.pop('user_folder', None)
+    return redirect('/')
+
 def get_user_folder():
     user_folder = app.config['UPLOADS_DIR'] + "/" + flask.session['user_name'].replace(" ", "_") + "-" + flask.session['user_id'].replace(" ", "_")
     if not os.path.exists(user_folder):
