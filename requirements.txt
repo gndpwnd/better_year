@@ -1,7 +1,7 @@
 Authlib==1.2.0
 Flask==2.2.3
 flask_login==0.6.2
-google_api_python_client==2.82.0
+google_api_python_client==2.85.0
 Pillow==9.4.0
 protobuf==4.22.1
 Werkzeug==2.2.3
