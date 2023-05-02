@@ -1,7 +1,7 @@
 # Access google drive for creating, modifying, deleting, and accessing report history
 import flask
-from flask import Blueprint, render_template, request, current_app, redirect, url_for
-from google_api_stuff.drive_funcs import *
+from flask import Blueprint, render_template, request, current_app, redirect, url_for, session
+from google_api_stuff.drive_funcs import view_history, create_report, delete_report
 from werkzeug.utils import secure_filename
 import json
 from time import sleep
@@ -14,7 +14,7 @@ def report():
 
 @report_app.route('/report/history')
 def history():
-    reports = view_history(flask.session['google_token'])
+    reports = view_history(session['google_token'])
     return render_template('report/history.html', reports=reports)
 
 @report_app.route('/report/delete', methods = ['POST', 'GET'])
@@ -24,7 +24,7 @@ def delete():
         report_id = flask.request.args.get('id')
 
         # delete report submission
-        delete_report(flask.session['google_token'], report_id)
+        delete_report(session['google_token'], report_id)
 
     # redirect to history page
     return redirect(url_for('report.history'))
@@ -33,7 +33,7 @@ def delete():
 def handle_data():
     # save data to temporary json file
     if flask.request.method == 'POST':
-        user_folder = flask.session['user_folder']
+        user_folder = session['user_folder']
         
         day_summary = request.form.get('day_summary_desc')
         
@@ -136,4 +136,4 @@ def allowed_file(filename):
 @report_app.route('/report/create', methods = ['POST', 'GET'])
 def create():
     # build a form for user input
-    return render_template('report/create.html', submission_url=url_for('report.handle_data'))
+    return render_template('report/create.html', submission_url=url_for('report.handle_data'), csrf_token=session['csrf_token'])

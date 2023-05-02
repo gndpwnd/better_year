@@ -7,7 +7,7 @@
       <link rel="stylesheet" href="{{url_for('static', filename='css/report.css')}}"/>
    </head>
    <body id="everything">
-      <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
+      <a href="/"><img id="logo" alt="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
 
       <h1 id="title">Create a New Report</h1>
       
@@ -16,6 +16,9 @@
       <div class="report-form">
 
       <form method="post" action="{{ submission_url }}" enctype="multipart/form-data">
+         <!-- add CSRF token field -->
+         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
          <div id="day_summary">
                <label for="day_summary_desc">Today's Summary</label>
                <textarea id="day_summary_desc" name="day_summary_desc"></textarea>

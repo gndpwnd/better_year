@@ -59,14 +59,13 @@ body {
     color: #fff;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 20px;
-    padding: 10px 20px;
     transition: all 0.2s ease-in-out;
     display: block;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
+    padding: 10px 20px;
 }
 
 .report-form input[type="submit"]:hover,
@@ -81,14 +80,13 @@ body {
     color: #fff;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 20px;
-    padding: 10px 20px;
     transition: all 0.2s ease-in-out;
     display: block;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
+    padding: 10px 20px;
 }
 
 #clear-form:hover {
@@ -140,15 +138,13 @@ body {
 #add_memory_description,
 #add_meal_description,
 #add_workout_description {
-    margin-top: auto;
     background-color: #007bff;
     border: none;
     border-radius: 10px;
     color: #fff;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 10px;
-    padding: 10px 20px;
+    margin-top: 20px;
     transition: all 0.2s ease-in-out;
 }
 
@@ -166,14 +162,13 @@ body {
     color: #fff;
     cursor: pointer;
     font-size: 16px;
-    margin-top: 20px;
-    padding: 10px 20px;
     transition: all 0.2s ease-in-out;
     display: block;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
+    padding: 10px 20px;
 }
 
 #submit-btn:hover {

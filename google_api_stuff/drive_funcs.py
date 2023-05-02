@@ -55,8 +55,8 @@ def get_main_folder_id(service):
             'name': folder_name,
             'mimeType': 'application/vnd.google-apps.folder'
         }
-        file = service.files().create(body=file_metadata, fields='id').execute()
-        folder_id = file.get('id')
+        _file = service.files().create(body=file_metadata, fields='id').execute()
+        folder_id = _file.get('id')
         #print(f'Folder ID: {folder_id}')
 
     return folder_id
@@ -87,9 +87,9 @@ def get_images_folder_id(service):
             'name': expected_folder_name,
             'mimeType': 'application/vnd.google-apps.folder'
         }
-        file = service.files().create(body=file_metadata, fields='id').execute()
+        _file = service.files().create(body=file_metadata, fields='id').execute()
 
-        folder_id = file.get("id")
+        folder_id = _file.get("id")
 
     return folder_id
 
@@ -283,26 +283,26 @@ def add_images_to_report(token, document_id, user_folder):
             #print("Using aspect ratio: ", aspect_ratio)
 
             # get image mime type
-            mimeType = ""
+            img_mime_type = ""
             if image.endswith(".png"):
-                mimeType = "image/png"
+                img_mime_type = "image/png"
             elif image.endswith(".jpg"):
-                mimeType = "image/jpeg"
+                img_mime_type = "image/jpeg"
             elif image.endswith(".jpeg"):
-                mimeType = "image/jpeg"
+                img_mime_type = "image/jpeg"
             elif image.endswith(".gif"):
-                mimeType = "image/gif"
+                img_mime_type = "image/gif"
             elif image.endswith(".bmp"):
-                mimeType = "image/bmp"
+                img_mime_type = "image/bmp"
             elif image.endswith(".svg"):
-                mimeType = "image/svg+xml"
+                img_mime_type = "image/svg+xml"
             elif image.endswith(".webp"):
-                mimeType = "image/webp"
+                img_mime_type = "image/webp"
 
             # Read the image file and convert it to a MediaIoBaseUpload object
             with io.open(image_path, 'rb') as image_file:
                 image_data = image_file.read()
-                media = MediaIoBaseUpload(io.BytesIO(image_data), mimetype=mimeType,chunksize=1024*1024, resumable=True)
+                media = MediaIoBaseUpload(io.BytesIO(image_data), mimetype=img_mime_type,chunksize=1024*1024, resumable=True)
             
             if images_folder_id:
                 # Upload the image file to the folder
@@ -335,7 +335,7 @@ def add_images_to_report(token, document_id, user_folder):
                         }
                     },
                 ]
-                result = built_docs_service.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
+                built_docs_service.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
 
                 
 
@@ -368,8 +368,7 @@ def add_images_to_report(token, document_id, user_folder):
                     }
                 ]
 
-                new_result = built_docs_service.documents().batchUpdate(documentId=document_id, body={'requests': new_requests}).execute()
-                #print(new_result)
+                built_docs_service.documents().batchUpdate(documentId=document_id, body={'requests': new_requests}).execute()
                 #print(F'Inserted image into document with ID: {document_id}')
 
 
@@ -402,12 +401,11 @@ def upload_report(token, doc_id, report):
             }
         }
     ]
-    result = built_docs_service.documents().batchUpdate(documentId=doc_id, body={'requests': requests}).execute()
+    built_docs_service.documents().batchUpdate(documentId=doc_id, body={'requests': requests}).execute()
     #print(f'Text uploaded to document with ID: {doc_id}')
    
 def create_report(day_summary, workout_descriptions, meal_descriptions, memory_topics, memory_descriptions, user_folder):
     token = flask.session['google_token']
-    username = flask.session['user_name']
 
     # build report
     #print("Building report...")
@@ -428,4 +426,3 @@ def create_report(day_summary, workout_descriptions, meal_descriptions, memory_t
     # add report to calendar
     #print("Adding report to calendar...")
     add_report_submission(token, flask.session['client_tz'], report_link)
-

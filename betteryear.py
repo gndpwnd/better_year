@@ -1,4 +1,5 @@
 import os
+from uuid import uuid4
 import flask
 from flask import Flask, render_template, url_for, redirect, request, jsonify
 from authlib.integrations.flask_client import OAuth
@@ -38,7 +39,7 @@ def index():
             tz = request.form['timezone']
             flask.session['client_tz'] = tz
 
-        if not 'client_tz' in flask.session:
+        if 'client_tz' not in flask.session:
             return render_template(
                 'tz_select.html',
                 name = flask.session['user_name'],
@@ -104,6 +105,9 @@ def google_auth():
     # set image width when addding to google docs
     flask.session['image_width'] = 500
     flask.session['user_folder'] = user_folder
+    # add a csrf token to the session :)
+    if 'csrf_token' not in flask.session:
+        flask.session['csrf_token'] = str(uuid4())
     return redirect('/')
 
 @app.route('/logout')
@@ -130,4 +134,3 @@ def get_user_folder():
         os.makedirs(user_folder)
     '''
     return user_folder
-
