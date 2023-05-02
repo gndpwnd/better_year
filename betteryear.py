@@ -7,6 +7,8 @@ import google_api_stuff.acc as acc
 import google_api_stuff.tasks as tasks_app
 import google_api_stuff.drive_funcs as drive_funcs
 
+port = "8000"
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("FN_FLASK_SECRET_KEY", default=False)
 
@@ -16,7 +18,7 @@ oauth.init_app(app)
 app.register_blueprint(report_app.report_app)
 app.register_blueprint(tasks_app.goals_app)
 
-app.config['SERVER_NAME'] = '127.0.0.1:8000'
+app.config['SERVER_NAME'] = "127.0.0.1:" + port
 
 # configure uploads directory
 uploads_folder_name = 'uploads'

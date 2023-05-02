@@ -8,7 +8,6 @@
    </head>
    <body id="everything">
       <a href="/"><img id="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
-      <h1 id="title">Edit Report</h1>
 
       <h1 id="title">Create a New Report</h1>
       
@@ -22,47 +21,47 @@
                <textarea id="day_summary_desc" name="day_summary_desc"></textarea>
          </div>
          
-         <div id="workout_descriptions">
-            <h3>Workout Descriptions</h3>
-            <div id="workout_description_1">
-                  <label for="workout_description_1">Workout Description 1:</label>
-                  <textarea id="workout_description_1" name="workout_description_1"></textarea>
-            </div>
-         </div>
-         <button id="add_workout_description" type="button">Add another workout description</button>
-
          <div id="meal_descriptions">
             <h3>Meal Descriptions</h3>
             <div id="meal_description_1">
-                  <label for="meal_description_1">Meal Description 1:</label>
+                  <label for="meal_description_1">Meal Description 1</label>
                   <textarea id="meal_description_1" name="meal_description_1"></textarea>
             </div>
          </div>
-         <button id="add_meal_description" type="button">Add another meal description</button>
+         <button id="add_meal_description" type="button">Add Meal Description</button>
+         
+         <div id="workout_descriptions">
+            <h3>Workout Descriptions</h3>
+            <div id="workout_description_1">
+                  <label for="workout_description_1">Workout Description 1</label>
+                  <textarea id="workout_description_1" name="workout_description_1"></textarea>
+            </div>
+         </div>
+         <button id="add_workout_description" type="button">Add Workout Description</button>
 
          <div id="memory_topics">
             <h3>Memory Topics</h3>
             <div id="memory_topic_1">
-                  <label for="memory_topic_1">Memory Topic 1:</label>
+                  <label for="memory_topic_1">Memory Topic 1</label>
                   <input type="text" id="memory_topic_1" name="memory_topic_1">
             </div>
          </div>
-         <button id="add_memory_topic" type="button">Add another memory topic</button>
+         <button id="add_memory_topic" type="button">Add Memory Topic</button>
 
          <div id="memory_descriptions">
             <h3>Memory Descriptions</h3>
             <div id="memory_description_1">
-                  <label for="memory_description_1">Memory Description 1:</label>
+                  <label for="memory_description_1">Memory Description 1</label>
                   <textarea id="memory_description_1" name="memory_description_1"></textarea>
             </div>
          </div>
-         <button id="add_memory_description" type="button">Add another memory description</button>
+         <button id="add_memory_description" type="button">Add Memory Description</button>
          <div id="image-uploads">
-            <label for="image">Select images (png, jpeg, jpg, webp):</label>
+            <label for="image">Select images (png, jpeg, jpg, webp)</label>
             <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg, image/webp" multiple>
          </div>
-         <input type="submit" value="Submit">
-</form>
+         <input id= "submit-btn" type="submit" value="Submit">
+      </form>
 
    <script>
       var workout_description_count = 1;
@@ -70,31 +69,31 @@
       var memory_topic_count = 1;
       var memory_description_count = 1;
 
-      // Add another workout description
+      // Add workout description
       document.getElementById('add_workout_description').addEventListener('click', function(){
          workout_description_count++;
          var div = document.createElement('div');
-         div.innerHTML = '<label for="workout_description_' + workout_description_count + '">Workout Description ' + workout_description_count + ':</label><textarea id="workout_description_' + workout_description_count + '" name="workout_description_' + workout_description_count + '"></textarea>';
+         div.innerHTML = '<label for="workout_description_' + workout_description_count + '">Workout Description ' + workout_description_count + '</label><textarea id="workout_description_' + workout_description_count + '" name="workout_description_' + workout_description_count + '"></textarea>';
          document.getElementById('workout_descriptions').appendChild(div);
       });
-      // Add another meal description
+      // Add meal description
       document.getElementById('add_meal_description').addEventListener('click', function(){meal_description_count++;
          var div = document.createElement('div');
-         div.innerHTML = '<label for="meal_description_' + meal_description_count + '">Meal Description ' + meal_description_count + ':</label><textarea id="meal_description_' + meal_description_count + '" name="meal_description_' + meal_description_count + '"></textarea>';
+         div.innerHTML = '<label for="meal_description_' + meal_description_count + '">Meal Description ' + meal_description_count + '</label><textarea id="meal_description_' + meal_description_count + '" name="meal_description_' + meal_description_count + '"></textarea>';
          document.getElementById('meal_descriptions').appendChild(div);
       });
-      // Add another memory topic
+      // Add memory topic
       document.getElementById('add_memory_topic').addEventListener('click', function(){
          memory_topic_count++;
          var div = document.createElement('div');
-         div.innerHTML = '<label for="memory_topic_' + memory_topic_count + '">Memory Topic ' + memory_topic_count + ':</label><input type="text" id="memory_topic_' + memory_topic_count + '" name="memory_topic_' + memory_topic_count + '">';
+         div.innerHTML = '<label for="memory_topic_' + memory_topic_count + '">Memory Topic ' + memory_topic_count + '</label><input type="text" id="memory_topic_' + memory_topic_count + '" name="memory_topic_' + memory_topic_count + '">';
          document.getElementById('memory_topics').appendChild(div);
       });
-      // Add another memory description
+      // Add memory description
       document.getElementById('add_memory_description').addEventListener('click', function(){
          memory_description_count++;
          var div = document.createElement('div');
-         div.innerHTML = '<label for="memory_description_' + memory_description_count + '">Memory Description ' + memory_description_count + ':</label><textarea id="memory_description_' + memory_description_count + '" name="memory_description_' + memory_description_count + '"></textarea>';
+         div.innerHTML = '<label for="memory_description_' + memory_description_count + '">Memory Description ' + memory_description_count + '</label><textarea id="memory_description_' + memory_description_count + '" name="memory_description_' + memory_description_count + '"></textarea>';
          document.getElementById('memory_descriptions').appendChild(div);
       });
 
@@ -135,5 +134,6 @@
          location.reload();
       });
    </script>
-   </body>
+   
+</body>
 </html>

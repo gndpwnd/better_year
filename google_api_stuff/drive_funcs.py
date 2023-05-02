@@ -186,7 +186,7 @@ def build_report(token, day_summary, workout_descriptions, meal_descriptions, me
     results = service.files().list(q=f"'{folder_id}' in parents", fields='nextPageToken, files(id, name)').execute()
     num_files = len(results.get('files', []))
     # add the current date to the ende of the file name
-    report_name = "#" + str(num_files + 1) + " - " + str(datetime.date.today())
+    report_name = "Report #" + str(num_files + 1) + " - " + str(datetime.date.today())
 
 
     # get current date
@@ -215,7 +215,7 @@ def build_report(token, day_summary, workout_descriptions, meal_descriptions, me
     memory_topic_spilt = memory_topics.split(desc_delimeter)
     memory_description_split = memory_descriptions.split(desc_delimeter)
     for i in range(len(memory_topic_spilt)):
-        memory_str += memory_topic_spilt[i] + "\n" + memory_description_split[i] + "\n"
+        memory_str += memory_topic_spilt[i] + "\n\n" + memory_description_split[i] + "\n\n\n"
 
     # build report from json data
     report = (
@@ -223,13 +223,13 @@ def build_report(token, day_summary, workout_descriptions, meal_descriptions, me
         str(report_title) +
         "\n\nSummary:\n\n" +
         str(summary) +
-        "\n\nMeals:\n" +
+        "\n\nMeals:\n\n" +
         str(meals_str) +
-        "Workouts:\n" +
+        "\nWorkouts:\n\n" +
         str(workout_str) +
-        "Memories:\n" +
+        "\nMemories:\n\n" +
         str(memory_str) +
-        "Images:\n"
+        "\nImages:\n\n"
         )
 
     return report_name, report
