@@ -10,6 +10,11 @@
       <a href="/"><img id="logo" alt="logo" src="{{url_for('static', filename='imgs/betteryear.webp')}}"/></a>
 
       <h1 id="title">Create a New Report</h1>
+
+      <div id="loading-overlay">
+         <img id="loading-image" src="{{url_for('static', filename='imgs/loading.gif')}}" alt="Loading..." />
+         <p id="loading-text">We'll Be With You Shortly...</p>
+      </div>
       
       <button id="clear-form">Clear This Form</button>
 
@@ -136,6 +141,25 @@
          // remove text from remaining forms by reloading the page
          location.reload();
       });
+   
+      const form = document.querySelector('form');
+      const submitBtn = document.getElementById('submit-btn');
+      const loadingOverlay = document.getElementById('loading-overlay');
+
+      // initially hide the overlay
+      loadingOverlay.style.display = 'none';
+
+      submitBtn.addEventListener('click', (event) => {
+         event.preventDefault(); // prevent the form from submitting normally
+         
+         loadingOverlay.style.display = 'block'; // show the overlay
+         
+         // submit the form after a short delay to give the overlay time to display
+         setTimeout(() => {
+            form.submit();
+         }, 500);
+      });
+      
    </script>
    
 </body>

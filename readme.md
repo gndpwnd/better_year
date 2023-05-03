@@ -10,7 +10,6 @@
 ```
 auth/user.birthday.read
 auth/tasks
-auth/drive
 auth/drive.file
 auth/documents
 auth/calendar
