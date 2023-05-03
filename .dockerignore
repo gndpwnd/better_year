@@ -1,0 +1,7 @@
+.vscode/
+server_stuff/
+*__pycache__/
+.gitignore
+.github
+LICENSE.md
+readme.md
