@@ -3,7 +3,7 @@ Flask==2.3.2
 flask_login==0.6.2
 google_api_python_client==2.86.0
 Pillow==9.5.0
-protobuf==4.22.3
+protobuf==4.23.2
 Werkzeug==2.3.3
 wheel
 gunicorn
